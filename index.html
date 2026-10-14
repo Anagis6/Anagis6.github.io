@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nikolas Adrian | Portofolio: Analisis Sentimen Mobil Listrik</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1c1c1a;--mut:#62625c;--card:#fff;--line:#e3e3dc;--acc:#0f6e56}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecece6;--mut:#a3a39a;--card:#1f1f1c;--line:#34342f;--acc:#5fcfa8}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:48px 20px 72px}
+h1{font-size:2rem;line-height:1.2;margin:.2em 0}
+h2{font-size:1.3rem;margin:2.2em 0 .6em;padding-bottom:.3em;border-bottom:1px solid var(--line)}
+p{margin:.6em 0}
+.mut{color:var(--mut)}
+.tag{display:inline-block;font-size:.8rem;padding:2px 10px;border:1px solid var(--line);border-radius:99px;margin:2px 4px 2px 0;background:var(--card)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:1.4em 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat b{display:block;font-size:1.5rem;color:var(--acc)}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 40px}
+.steps li:before{content:counter(s);position:absolute;left:0;top:8px;width:26px;height:26px;border-radius:50%;background:var(--acc);color:var(--bg);display:grid;place-items:center;font-size:.8rem;font-weight:600}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:520px;background:var(--card)}
+th,td{padding:9px 12px;border:1px solid var(--line);text-align:left;font-size:.95rem}
+th{font-weight:600}
+td.best{font-weight:700;color:var(--acc)}
+a{color:var(--acc)}
+.btn{display:inline-block;margin:6px 8px 0 0;padding:8px 16px;border:1px solid var(--acc);border-radius:8px;text-decoration:none}
+footer{margin-top:3em;font-size:.85rem;color:var(--mut)}
+</style>
+</head>
+<body>
+<main>
+<p class="mut">Portofolio · Studi Kasus</p>
+<h1>Perbandingan Naïve Bayes dan SVM untuk Memahami Opini Publik terhadap Mobil Listrik</h1>
+<p class="mut">Nikolas Adrian Marknupi Wardhana · S1 Informatika, Universitas Sanata Dharma (Skripsi, 2026)</p>
+<p>
+<span class="tag">Python</span><span class="tag">scikit-learn</span><span class="tag">NLP</span><span class="tag">NLTK</span><span class="tag">Sastrawi</span><span class="tag">VADER</span><span class="tag">TF-IDF</span><span class="tag">Google Colab</span>
+</p>
+<p>
+<a class="btn" href="https://github.com/Anagis6/REPO-SKRIPSI">Kode di GitHub</a>
+<a class="btn" href="Skripsi_205314120_Nikolas_Adrian_Marknupi_Wardhana.pdf">Baca skripsi (PDF)</a>
+</p>
+
+<div class="stats">
+<div class="stat"><b>9.121</b>tweet berbahasa Indonesia</div>
+<div class="stat"><b>4 model</b>Multinomial NB, Bernoulli NB, SVM Linear, SVM RBF</div>
+<div class="stat"><b>91,07%</b>akurasi terbaik (Bernoulli NB)</div>
+<div class="stat"><b>6 nilai K</b>3, 5, 7, 10, 11, 12 pada K-Fold</div>
+</div>
+
+<h2>Latar belakang</h2>
+<p>Mobil listrik adalah bagian penting dari upaya menekan emisi, tetapi penerimaan masyarakatnya masih beragam. Opini di media sosial bisa menjadi sumber untuk memahami persepsi itu. Proyek ini menguji algoritma mana yang paling baik mengklasifikasikan sentimen (positif atau negatif) dari tweet tentang mobil listrik.</p>
+
+<h2>Pipeline</h2>
+<ol class="steps">
+<li><b>Pengumpulan data.</b> Tweet dengan kata kunci "mobil listrik", periode 1 Maret 2023 sampai 30 Juni 2025, dikumpulkan dengan tweet-harvest (Node.js): 9.121 tweet.</li>
+<li><b>Pelabelan.</b> Skor polaritas dihitung dengan VADER. Distribusi awal: netral 7.967, positif 739, negatif 415. Kelas netral dibuang karena didominasi konten iklan, sehingga tersisa klasifikasi biner.</li>
+<li><b>Penyeimbangan data.</b> Dua skenario dibandingkan: undersampling (415 : 415) dan oversampling (739 : 739).</li>
+<li><b>Preprocessing.</b> Cleaning (URL, mention, hashtag, angka), tokenizing (NLTK), normalisasi kata tidak baku dengan kamus, stopword removal, dan stemming (Sastrawi).</li>
+<li><b>Ekstraksi fitur.</b> TF-IDF dengan 5.000 fitur teratas.</li>
+<li><b>Evaluasi.</b> Stratified K-Fold Cross Validation dengan variasi K, alpha (NB), serta C dan gamma (SVM).</li>
+</ol>
+
+<h2>Hasil</h2>
+<p>Akurasi terbaik tiap model pada kedua skenario penyeimbangan:</p>
+<div class="tw">
+<table>
+<tr><th>Model</th><th>Undersampling</th><th>Oversampling</th><th>Konfigurasi terbaik (oversampling)</th></tr>
+<tr><td>Bernoulli Naïve Bayes</td><td>79,52%</td><td class="best">91,07%</td><td>K=10, α=0,1</td></tr>
+<tr><td>SVM Linear</td><td>78,92%</td><td>90,53%</td><td>K=10, C=0,5</td></tr>
+<tr><td>Multinomial Naïve Bayes</td><td>79,40%</td><td>89,99%</td><td>K=10, α=0,1</td></tr>
+<tr><td>SVM RBF</td><td>64,34%</td><td>84,98%</td><td>K=10, C=0,5, γ=0,1</td></tr>
+</table>
+</div>
+<p><b>Temuan utama:</b> Bernoulli Naïve Bayes unggul tipis atas SVM Linear. Oversampling memberi akurasi jauh lebih tinggi daripada undersampling. Pada SVM RBF, gamma besar (10) cenderung menurunkan akurasi dan membuat hasil tidak stabil.</p>
+
+<h2>Catatan dan rencana pengembangan</h2>
+<p>Bagian ini menunjukkan hal yang akan saya perbaiki pada versi berikutnya:</p>
+<ul>
+<li><b>Kualitas label.</b> VADER dirancang untuk bahasa Inggris, sehingga label untuk teks Indonesia perlu divalidasi. Rencananya: pelabelan ulang dengan model berbahasa Indonesia (misalnya IndoBERT) dan pengecekan manual pada sampel.</li>
+<li><b>Kebocoran data.</b> Penyeimbangan data sebaiknya dilakukan di dalam setiap fold (hanya pada data latih), atau memakai SMOTE dalam pipeline, agar akurasi tidak terlalu optimistis.</li>
+<li><b>Metrik.</b> Menambahkan precision, recall, F1-score, dan waktu pelatihan, bukan hanya akurasi.</li>
+<li><b>Tuning.</b> Rentang parameter C dan gamma yang lebih luas, misalnya dengan GridSearchCV.</li>
+</ul>
+
+<h2>Kontak</h2>
+<p>
+<a href="https://github.com/Anagis6">GitHub</a> ·
+<a href="nikolasadrian.661@gmail.com">EMAIL-KAMU@example.com</a>
+</p>
+<footer>Ganti USERNAME-KAMU dan EMAIL-KAMU dengan data aslimu sebelum diunggah.</footer>
+</main>
+</body>
+</html>
